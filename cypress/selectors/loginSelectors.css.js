@@ -10,6 +10,6 @@ module.exports = {
     emailErrorXpath:"//p[@id=':r0:-form-item-message']",
     emailErrorMessage:"Please enter a valid email",
     passwordErrorXpath:"//p[@id=':r1:-form-item-message']",
-    passwordErrorMessage:"Password is required",
+    passwordErrorMessage:"Password is required.",
 
 }
