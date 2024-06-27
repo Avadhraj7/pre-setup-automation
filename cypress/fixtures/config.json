@@ -1,0 +1,33 @@
+{
+  "cred": {
+    "correctEmail": "meet@7span.com",
+    "correctPassword": "Password@123#",
+    "incorrectEmail":"mit@7span.com",
+    "incorrectPassword": "Password@12345", 
+    "correctOTP":"777777",
+    "incorrectOTP":"111111",
+
+    "correctOTPField1":"7",
+    "correctOTPField2":"7",
+    "correctOTPField3":"7",
+    "correctOTPField4":"7",
+    "correctOTPField5":"7",
+    "correctOTPField6":"7",
+
+    "incorrectOTPField1":"1",
+    "incorrectOTPField2":"1",
+    "incorrectOTPField3":"1",
+    "incorrectOTPField4":"1",
+    "incorrectOTPField5":"1",
+    "incorrectOTPField6":"1"
+
+  },
+  "screenshot": {
+    "screenshotOnRunFailure": true,
+    "screenshotOnFailure": true,
+    "defaultCommandTimeout": 10000,
+    "env": {
+      "screenshotFolder": "cypress/screenshots"
+    }
+  }
+}
