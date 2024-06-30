@@ -24,7 +24,7 @@ jobs:
           node-version: '20'
 
       - name: Install Cypress
-        run: npm ci
+        run: npm install
 
       - name: Install Dependencies
         run: |
@@ -53,6 +53,9 @@ jobs:
             cypress/results/
             cypress/reports/
 
+      - name: Compress Results
+        run: zip -r cypress-results.zip cypress/results
+
       - name: Send Email on Success
         if: success()
         uses: dawidd6/action-send-mail@v3
@@ -67,11 +70,7 @@ jobs:
             Build URL: ${{ github.run_url }}
           to: parmar.avadh14@gmail.com
           from: ${{ secrets.MAIL_USERNAME }}
-          attachments: |
-            cypress/results/*.html
-            cypress/results/*.json
-            cypress/screenshots/**/*.png
-            cypress/reports/**/*
+          attachments: cypress-results.zip
 
       - name: Send Email on Failure
         if: failure()
@@ -87,8 +86,4 @@ jobs:
             Build URL: ${{ github.run_url }}
           to: parmar.avadh14@gmail.com
           from: ${{ secrets.MAIL_USERNAME }}
-          attachments: |
-            cypress/results/*.html
-            cypress/results/*.json
-            cypress/screenshots/**/*.png
-            cypress/reports/**/*
+          attachments: cypress-results.zip
