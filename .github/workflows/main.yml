@@ -1,0 +1,94 @@
+name: Cypress Tests
+
+on:
+  schedule:
+    - cron: '0 10 * * *'  # Trigger daily at 10 AM
+  push:
+    branches:
+      - master
+
+jobs:
+  cypress-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/cypress/.cache/Cypress
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.16.0'
+
+      - name: Install Cypress
+        run: npm ci
+
+      - name: Install Dependencies
+        run: |
+          npm install -D cypress-xpath
+          npm install mochawesome mochawesome-merge mochawesome-report-generator --save-dev
+
+      - name: Verify Configuration File
+        run: |
+          if [ ! -f "${GITHUB_WORKSPACE}/cypress.config.js" ]; then
+            echo "Configuration file missing."
+            exit 1
+          else
+            echo "Configuration file exists."
+          fi
+
+      - name: Run Cypress Tests
+        run: npx cypress run --config-file="${GITHUB_WORKSPACE}/cypress.config.js" --reporter mochawesome --reporter-options reportDir=cypress/results,overwrite=false,html=false,json=true
+
+      - name: Archive Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-results
+          path: |
+            cypress/screenshots/
+            cypress/videos/
+            cypress/results/
+            cypress/reports/
+
+      - name: Send Email on Success
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: Cypress Tests Passed
+          body: |
+            Cypress tests have passed successfully.
+            Build URL: ${{ github.run_url }}
+          to: parmar.avadh14@gmail.com
+          from: ${{ secrets.MAIL_USERNAME }}
+          attachments: |
+            cypress/results/*.html
+            cypress/results/*.json
+            cypress/screenshots/**/*.png
+            cypress/reports/**/*
+
+      - name: Send Email on Failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: Cypress Tests Failed
+          body: |
+            Cypress tests have failed. Please check the test results.
+            Build URL: ${{ github.run_url }}
+          to: parmar.avadh14@gmail.com
+          from: ${{ secrets.MAIL_USERNAME }}
+          attachments: |
+            cypress/results/*.html
+            cypress/results/*.json
+            cypress/screenshots/**/*.png
+            cypress/reports/**/*
