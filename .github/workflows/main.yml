@@ -11,9 +11,6 @@ jobs:
   cypress-tests:
     runs-on: ubuntu-latest
 
-    env:
-      CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/cypress/.cache/Cypress
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -53,9 +50,6 @@ jobs:
             cypress/results/
             cypress/reports/
 
-      - name: Compress Results
-        run: zip -r cypress-results.zip cypress/results
-
       - name: Send Email on Success
         if: success()
         uses: dawidd6/action-send-mail@v3
@@ -67,10 +61,12 @@ jobs:
           subject: Cypress Tests Passed
           body: |
             Cypress tests have passed successfully.
-            Build URL: ${{ github.run_url }}
           to: parmar.avadh14@gmail.com
           from: ${{ secrets.MAIL_USERNAME }}
-          attachments: cypress-results.zip
+          attachments: |
+            cypress/results/*.html
+            cypress/results/*.json
+            cypress/screenshots/**/*.png
 
       - name: Send Email on Failure
         if: failure()
@@ -83,7 +79,9 @@ jobs:
           subject: Cypress Tests Failed
           body: |
             Cypress tests have failed. Please check the test results.
-            Build URL: ${{ github.run_url }}
           to: parmar.avadh14@gmail.com
           from: ${{ secrets.MAIL_USERNAME }}
-          attachments: cypress-results.zip
+          attachments: |
+            cypress/results/*.html
+            cypress/results/*.json
+            cypress/screenshots/**/*.png
