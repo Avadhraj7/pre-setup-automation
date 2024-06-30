@@ -16,12 +16,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.16.0'
+          node-version: '20'
 
       - name: Install Cypress
         run: npm ci
@@ -44,7 +44,7 @@ jobs:
         run: npx cypress run --config-file="${GITHUB_WORKSPACE}/cypress.config.js" --reporter mochawesome --reporter-options reportDir=cypress/results,overwrite=false,html=false,json=true
 
       - name: Archive Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: cypress-results
           path: |
