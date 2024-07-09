@@ -1,8 +1,6 @@
 name: Cypress Tests
 
 on:
-  schedule:
-    - cron: '0 10 * * *'  # Trigger daily at 10 AM
   push:
     branches:
       - master
