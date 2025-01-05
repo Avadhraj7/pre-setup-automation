@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+  schedule:
+    - cron: '0 10 * * *' # Runs every day at 10 AM UTC
 
 jobs:
   cypress-tests:
